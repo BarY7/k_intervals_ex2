@@ -40,7 +40,7 @@ class Assignment2(object):
         Returns: None.
         """
         samples = self.sample_from_D(m)
-        samples = samples[samples[:,0].argsort()]
+        samples = samples[samples[:, 0].argsort()]
         plt.scatter(samples[:, 0], samples[:, 1])
         plt.xlim(-0.1, 1.1)
         plt.ylim(-0.1, 1.1)
@@ -86,7 +86,7 @@ class Assignment2(object):
         for t in range(0, T):
             for m in range(m_first, m_last+step, step):
                 sample_array = self.sample_from_D(m)
-                sample_array = sample_array[sample_array[:,0].argsort()]
+                sample_array = sample_array[sample_array[:, 0].argsort()]
                 xs = sample_array[:, 0]
                 ys = sample_array[:, 1]
                 all_intervals = intervals.find_best_interval(xs, ys, k)[0]
@@ -178,7 +178,7 @@ class Assignment2(object):
             sample_array_full = self.sample_from_D(m)
             for k in range(k_first, k_last+step, step):
                 sample_array = sample_array_full[:int(0.8*m)]
-                sample_array = sample_array[sample_array[:,0].argsort()]
+                sample_array = sample_array[sample_array[:, 0].argsort()]
                 xs = sample_array[:, 0]
                 ys = sample_array[:, 1]
                 all_intervals = intervals.find_best_interval(xs, ys, k)[0]
@@ -189,8 +189,9 @@ class Assignment2(object):
                     (k - k_first)/step)] = all_intervals
             for k in range(k_first, k_last+step, step):
                 sample_array = sample_array_full[int(0.8*m):]
-                sample_array = sample_array[sample_array[:,1].argsort()]
-                empirical_err, true_err = self.calculate_errors(sample_array, k, intervals_for_k[int((k - k_first)/step)])
+                sample_array = sample_array[sample_array[:, 1].argsort()]
+                empirical_err, true_err = self.calculate_errors(
+                    sample_array, k, intervals_for_k[int((k - k_first)/step)])
                 empirical_array[int(
                     (k - k_first)/step)] = empirical_array[int((k - k_first)/step)] + empirical_err
             result.append(np.argmin(empirical_array) + 1)
@@ -251,7 +252,7 @@ class Assignment2(object):
                 (p_interval[1] - p_interval[0])
             if (p_interval == (0.2, 0.4) or p_interval == (0.6, 0.8)):
                 err_sum = err_sum + (total_for_interval *
-                                     0.18 + (1-total_for_interval)*0.02)  
+                                     0.18 + (1-total_for_interval)*0.02)
             else:
                 err_sum = err_sum + (total_for_interval *
                                      0.04 + (1-total_for_interval)*0.16)
@@ -272,9 +273,9 @@ class Assignment2(object):
             [0 for x in range(k_first, k_last+step, step)], dtype=np.float32)
         true_array = np.array(
             [0 for x in range(k_first, k_last+step, step)], dtype=np.float32)
+        sample_array = self.sample_from_D(m)
+        sample_array = sample_array[sample_array[:, 0].argsort()]
         for k in range(k_first, k_last+step, step):
-            sample_array = self.sample_from_D(m)
-            sample_array = sample_array[sample_array[:,0].argsort()]
             xs = sample_array[:, 0]
             ys = sample_array[:, 1]
             all_intervals = intervals.find_best_interval(xs, ys, k)[0]
@@ -309,9 +310,9 @@ class Assignment2(object):
             [0 for x in range(k_first, k_last+step, step)], dtype=np.float32)
         penalty_emp_sum_array = np.array(
             [0 for x in range(k_first, k_last+step, step)], dtype=np.float32)
+        sample_array = self.sample_from_D(m)
+        sample_array = sample_array[sample_array[:, 0].argsort()]
         for k in range(k_first, k_last+step, step):
-            sample_array = self.sample_from_D(m)
-            sample_array = sample_array[sample_array[:,0].argsort()]
             xs = sample_array[:, 0]
             ys = sample_array[:, 1]
             all_intervals = intervals.find_best_interval(xs, ys, k)[0]
@@ -344,8 +345,8 @@ class Assignment2(object):
 
 if __name__ == '__main__':
     ass = Assignment2()
-    # ass.draw_sample_intervals(100, 3)
-    # ass.experiment_m_range_erm(10, 100, 5, 3, 100)
-    # ass.experiment_k_range_erm(1500, 1, 10, 1)
-    # ass.experiment_k_range_srm(1500, 1, 10, 1)
-    ass.cross_validation(1000, 3)
+    ass.draw_sample_intervals(100, 3)
+    ass.experiment_m_range_erm(10, 100, 5, 3, 100)
+    ass.experiment_k_range_erm(1500, 1, 10, 1)
+    ass.experiment_k_range_srm(1500, 1, 10, 1)
+    ass.cross_validation(1500, 3)
